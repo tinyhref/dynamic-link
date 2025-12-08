@@ -1,0 +1,23 @@
+{
+  "remove": [
+    "devDependencies"
+  ],
+  "replace": {
+    "main": "dist/index.js",
+    "module": "dist/index.mjs",
+    "types": "dist/index.d.ts",
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.js"
+      },
+      "./use-open-dynamic-link": {
+        "types": "./dist/use-open-dynamic-link.d.ts",
+        "import": "./dist/use-open-dynamic-link.mjs",
+        "require": "./dist/use-open-dynamic-link.js"
+      },
+      "./package.json": "./package.json"
+    }
+  }
+}

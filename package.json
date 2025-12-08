@@ -1,0 +1,56 @@
+{
+  "name": "@tinyhref/dynamic-link",
+  "version": "1.0.0",
+  "description": "DynamicLink is a lightweight, Firebase-free alternative for handling dynamic links and deep links in web and mobile hybrid environments",
+  "keywords": [
+    "dynamic-link",
+    "deep-link",
+    "react-hook",
+    "firebase-dynamic-links",
+    "firebase-alternative"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "TinyHref",
+    "website": "https://tinyhref.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tinyhref/dynamic-link"
+  },
+  "main": "src/index.tsx",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./*"
+      ]
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsup src --dts",
+    "dev": "pnpm build:fast --watch",
+    "clean": "rimraf dist .turbo",
+    "typecheck": "tsc --noEmit",
+    "build:fast": "tsup src",
+    "prepack": "clean-package",
+    "postpack": "clean-package restore"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "clean-package": "2.2.0",
+    "tsup": "8.5.0",
+    "typescript": "4.9.5",
+    "react": "^18.3.0"
+  },
+  "clean-package": "./clean-package.config.json"
+}
