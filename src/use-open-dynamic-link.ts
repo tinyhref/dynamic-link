@@ -3,49 +3,51 @@ import { useCallback, useEffect, useMemo } from 'react';
 import type { IProps } from './types';
 
 interface IParams {
-  link?: string
+  targetUrl?: string
 }
 
-function getParameterByName(name: string, url?: string) {
+function getQueryParam(key: string, url?: string) {
   if (!url) {
     url = window.location.href
   }
 
-  name = name.replace(/[\[\]]/g, '\\$&');
-
-  const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
-  const results = regex.exec(url);
-
-  if (!results) {
-    return null
+  try {
+    return new URL(url).searchParams.get(key);
+  } catch (e) {
+    return null;
   }
-
-  if (!results[2]) {
-    return ''
-  }
-
-  return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-export function getLink(link?: string) {
-  const realLink = link || window.location.href;
+export function getLink(subdomainUrl: string, params?: IParams) {
+  let realLink: string;
+  const targetUrl = params?.targetUrl;
+
+  if (targetUrl) {
+    realLink = `${targetUrl}${targetUrl.includes('?') ? '&' : '?'}link=${encodeURIComponent(window.location.href)}`
+  } else {
+    if (subdomainUrl) {
+      realLink = `${subdomainUrl.replace(/\/+$/, '')}${window.location.pathname}${window.location.search}`
+    } else {
+      realLink = window.location.href
+    }
+  }
 
   return `${realLink}${realLink.includes('?') ? '&' : '?'}isOpenStore=true`
 }
 
 export const useOpenDynamicLink = (props: IProps) => {
   const {
+    subdomainUrl,
     appStoreUrl,
     googlePlayUrl,
     fallbackUrl,
-    timeout = 200,
     platform = {}
   } = props;
-  const handleOpenDynamicLink = useCallback((params: IParams = {}) => {
-    const fullLink = getLink(params?.link);
+  const handleOpenDynamicLink = useCallback((params?: IParams) => {
+    const fullLink = getLink(subdomainUrl, params);
 
     window.open(fullLink);
-  }, [])
+  }, [subdomainUrl])
 
   const handleOpenStore = useCallback(() => {
     const userAgent = props?.userAgent || window.navigator.userAgent;
@@ -60,19 +62,12 @@ export const useOpenDynamicLink = (props: IProps) => {
     }
 
     if (storeLink) {
-      if (timeout) {
-        setTimeout(() => {
-          window.location.href = storeLink;
-        }, timeout)
-        return
-      }
-
       window.location.href = storeLink;
     }
   }, [])
 
   const isOpenStore = useMemo(() => {
-    return Boolean(getParameterByName('isOpenStore'))
+    return Boolean(getQueryParam('isOpenStore'))
   }, [])
 
   useEffect(() => {
@@ -82,7 +77,7 @@ export const useOpenDynamicLink = (props: IProps) => {
   }, [isOpenStore]);
 
   return {
-    link: getLink(),
+    link: getLink(subdomainUrl),
     openDynamicLink: handleOpenDynamicLink,
     openStore: handleOpenStore
   }

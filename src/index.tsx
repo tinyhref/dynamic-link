@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, AnchorHTMLAttributes } from 'react';
 
 import { useOpenDynamicLink } from './use-open-dynamic-link';
 
@@ -7,15 +7,20 @@ import type { IProps } from './types';
 interface DynamicLinkProps extends IProps {
   children: ReactNode
   className?: string
+  htmlProps?: AnchorHTMLAttributes<HTMLAnchorElement>
 }
 
 const DynamicLink = (props: DynamicLinkProps) => {
-  const { children, className } = props;
+  const { children, className, htmlProps, ...restProps } = props;
 
-  const { link } = useOpenDynamicLink(props);
+  const { link } = useOpenDynamicLink(restProps);
 
   return (
-    <a href={link} className={className}>
+    <a
+      {...htmlProps}
+      className={className}
+      href={link}
+    >
       {children}
     </a>
   )
