@@ -5,10 +5,12 @@ export interface IPlatform {
 }
 
 export interface IProps {
+  domainUrl?: string
   subdomainUrl: string
   appStoreUrl: string
   googlePlayUrl: string
   fallbackUrl: string
   userAgent?: string
   platform?: IPlatform
+  timeout?: number
 }
