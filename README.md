@@ -31,18 +31,16 @@ or
 
 ```js
 import React from 'react';
-import { useOpenDynamicLink } from '@tinyhref/dynamic-link/use-open-dynamic-link';
+import { useOpenDynamicLink } from '@tinyhref/dynamic-link';
 
-const { openDynamicLink } = useOpenDynamicLink({
+const { link } = useOpenDynamicLink({
   subdomainUrl: 'https://deeplink.tinyhref.com',
   appStoreUrl: 'https://apps.apple.com/app/apple-store/id1072038396',
   googlePlayUrl: 'https://play.google.com/store/apps/details?id=vn.vtv.vtvgo',
   fallbackUrl: 'https://tinyhref.com'
 });
 
-<button
-  onClick={openDynamicLink}
->
+<a href={link}>
   Open App
-</button>
+</a>
 ```
