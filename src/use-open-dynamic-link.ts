@@ -51,19 +51,21 @@ export function getLink(domainUrl: string, params?: IParams) {
 
 export const useOpenDynamicLink = (props: IProps) => {
   const {
-    domainUrl,
     subdomainUrl,
     appStoreUrl,
     googlePlayUrl,
+    domainUrl,
     fallbackUrl,
     platform = {},
-    timeout = 100
+    timeout = 100,
+    onOpenStore
   } = props;
+
   const handleOpenDynamicLink = useCallback((params?: IParams) => {
     const fullLink = getLink(subdomainUrl, params);
 
     window.open(fullLink);
-  }, [subdomainUrl])
+  }, [subdomainUrl]);
 
   const handleOpenStore = useCallback(() => {
     const userAgent = props?.userAgent || window.navigator.userAgent;
@@ -86,6 +88,10 @@ export const useOpenDynamicLink = (props: IProps) => {
       }
     }
 
+    if (redirectToUrl) {
+      onOpenStore?.({ link: redirectToUrl });
+    }
+
     if (storeLink) {
       window.location.href = storeLink;
     }
@@ -95,11 +101,11 @@ export const useOpenDynamicLink = (props: IProps) => {
         window.location.href = redirectToUrl
       }, timeout)
     }
-  }, [])
+  }, []);
 
   const isOpenStore = useMemo(() => {
     return Boolean(getQueryParam('isOpenStore'))
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (isOpenStore) {
