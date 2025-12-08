@@ -4,6 +4,10 @@ import { useOpenDynamicLink } from './use-open-dynamic-link';
 
 import type { IProps } from './types';
 
+export {
+  useOpenDynamicLink
+}
+
 interface DynamicLinkProps extends IProps {
   children: ReactNode
   className?: string
