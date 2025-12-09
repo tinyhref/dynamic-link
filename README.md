@@ -18,7 +18,10 @@ const dynamicLinkProps = {
   subdomainUrl: 'https://deeplink.tinyhref.com',
   appStoreUrl: 'https://apps.apple.com/app/apple-store/id1072038396',
   googlePlayUrl: 'https://play.google.com/store/apps/details?id=vn.vtv.vtvgo',
-  fallbackUrl: 'https://tinyhref.com'
+  fallbackUrl: 'https://tinyhref.com',
+  onOpenStore: ({ link }) => {
+    // Handle Clipboard-Based Deferred Deep Linking
+  }
 };
 
 <DynamicLink
