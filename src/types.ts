@@ -9,9 +9,10 @@ export interface IProps {
   appStoreUrl: string
   googlePlayUrl: string
   fallbackUrl: string
-  domainUrl?: string
+  originUrl?: string
   userAgent?: string
   platform?: IPlatform
   timeout?: number
+  queryKey?: string
   onOpenStore?: (params: { link: string }) => void
 }

@@ -8,7 +8,7 @@ export {
   useOpenDynamicLink
 }
 
-interface DynamicLinkProps extends IProps {
+export interface DynamicLinkProps extends IProps {
   children: ReactNode
   className?: string
   htmlProps?: AnchorHTMLAttributes<HTMLAnchorElement>

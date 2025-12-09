@@ -5,6 +5,7 @@ import type { IProps } from './types';
 interface IParams {
   targetUrl?: string
   isMainDomain?: boolean
+  queryKey?: string
 }
 
 function getQueryParam(key: string, url?: string) {
@@ -20,11 +21,22 @@ function getQueryParam(key: string, url?: string) {
 }
 
 export function getLink(domainUrl: string, params?: IParams) {
+  const queryKey = params?.queryKey!;
+
   if (params?.isMainDomain) {
+    if (!domainUrl) {
+      return ''
+    }
+
     const url = `${domainUrl.replace(/\/+$/, '')}${window.location.pathname}${window.location.search}`;
 
+    if (!queryKey) {
+      return url
+    }
+
     const urlObj = new URL(url);
-    urlObj.searchParams.delete('isOpenStore');
+    urlObj.searchParams.delete(queryKey);
+    urlObj.searchParams.delete('origin');
 
     return urlObj.toString();
   }
@@ -42,11 +54,11 @@ export function getLink(domainUrl: string, params?: IParams) {
     }
   }
 
-  if (realLink.includes('isOpenStore=true')) {
+  if (realLink.includes(`${queryKey}=1`)) {
     return realLink
   }
 
-  return `${realLink}${realLink.includes('?') ? '&' : '?'}isOpenStore=true`
+  return `${realLink}${realLink.includes('?') ? '&' : '?'}${queryKey}=1&origin=${window.location.origin}`
 }
 
 export const useOpenDynamicLink = (props: IProps) => {
@@ -54,38 +66,40 @@ export const useOpenDynamicLink = (props: IProps) => {
     subdomainUrl,
     appStoreUrl,
     googlePlayUrl,
-    domainUrl,
     fallbackUrl,
     platform = {},
     timeout = 100,
+    queryKey = 'openStore',
     onOpenStore
   } = props;
 
+  let originUrl = props?.originUrl;
+
   const handleOpenDynamicLink = useCallback((params?: IParams) => {
-    const fullLink = getLink(subdomainUrl, params);
+    const fullLink = getLink(subdomainUrl, { ...params, queryKey });
 
     window.open(fullLink);
-  }, [subdomainUrl]);
+  }, [subdomainUrl, queryKey]);
 
   const handleOpenStore = useCallback(() => {
     const userAgent = props?.userAgent || window.navigator.userAgent;
     let storeLink: string = fallbackUrl;
     let redirectToUrl: string = '';
 
+    if (!originUrl) {
+      originUrl = getQueryParam('origin') || '';
+    }
+
     if (/iPhone|iPad|iPod/i.test(userAgent) || platform?.isIOS || platform?.isIpad) {
       storeLink = appStoreUrl;
 
-      if (domainUrl) {
-        redirectToUrl = getLink(domainUrl, { isMainDomain: true });
-      }
+      redirectToUrl = getLink(originUrl, { isMainDomain: true, queryKey });
     }
 
     if (/Android/i.test(userAgent) || platform?.isAndroid) {
       storeLink = googlePlayUrl;
 
-      if (domainUrl) {
-        redirectToUrl = getLink(domainUrl, { isMainDomain: true });
-      }
+      redirectToUrl = getLink(originUrl, { isMainDomain: true, queryKey });
     }
 
     if (redirectToUrl) {
@@ -101,11 +115,11 @@ export const useOpenDynamicLink = (props: IProps) => {
         window.location.href = redirectToUrl
       }, timeout)
     }
-  }, []);
+  }, [queryKey]);
 
   const isOpenStore = useMemo(() => {
-    return Boolean(getQueryParam('isOpenStore'))
-  }, []);
+    return Boolean(getQueryParam(queryKey))
+  }, [queryKey]);
 
   useEffect(() => {
     if (isOpenStore) {
@@ -114,7 +128,7 @@ export const useOpenDynamicLink = (props: IProps) => {
   }, [isOpenStore]);
 
   return {
-    link: getLink(subdomainUrl),
+    link: getLink(subdomainUrl, { queryKey }),
     openDynamicLink: handleOpenDynamicLink,
     openStore: handleOpenStore
   }
