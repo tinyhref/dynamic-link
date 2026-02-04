@@ -17,6 +17,11 @@
         "import": "./dist/use-open-dynamic-link.mjs",
         "require": "./dist/use-open-dynamic-link.js"
       },
+      "./sdk": {
+        "types": "./dist/sdk.d.ts",
+        "import": "./dist/sdk.mjs",
+        "require": "./dist/sdk.js"
+      },
       "./package.json": "./package.json"
     }
   }

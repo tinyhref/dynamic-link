@@ -16,3 +16,7 @@ export interface IProps {
   queryKey?: string
   onOpenStore?: (params: { link: string }) => void
 }
+
+export interface IOptions extends IProps {
+
+}

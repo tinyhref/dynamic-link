@@ -1,11 +1,13 @@
 import React, { type ReactNode, AnchorHTMLAttributes } from 'react';
 
 import { useOpenDynamicLink } from './use-open-dynamic-link';
+import { Sdk } from './sdk';
 
 import type { IProps } from './types';
 
 export {
-  useOpenDynamicLink
+  useOpenDynamicLink,
+  Sdk
 }
 
 export interface DynamicLinkProps extends IProps {
